@@ -12,7 +12,8 @@ public class Board extends JPanel{
          for (int c = 0; c < cells[0].length; c++){
             cells[r][c] = new Cell(r, c);
             add(cells[r][c]);
-            //cells[r][c].setBackground(new Color(70, 240, 110));
+            cells[r][c].setBackground(new Color(70, 240, 110));
+            cells[r][c].setEnabled(false);
          }
       }
    }
@@ -48,7 +49,6 @@ public class Board extends JPanel{
             if(!cells[r][c].getActivated()){
                cells[r][c].deactivate();
             }
-            
          }
       }
       for(int i = 0; i < 7; i ++){
