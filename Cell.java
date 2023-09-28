@@ -6,25 +6,12 @@ public class Cell extends JButton implements MouseListener{
    private int row;
    private int column;
    private boolean activated = false;
-   //private int x;
-   //private int y;
    
    public Cell(int r, int c){
       addMouseListener(this);
       row = r;
       column = c;
-      //x = getBounds().x;
-      //y = getBounds().y;
    }
-   
-   /*
-   public int getX(){
-      return x;
-   }
-   
-   public int getY(){
-      return y;
-   }*/
    
    public boolean getActivated(){
       return activated;

@@ -12,7 +12,7 @@ public class Board extends JPanel{
          for (int c = 0; c < cells[0].length; c++){
             cells[r][c] = new Cell(r, c);
             add(cells[r][c]);
-            //cells[r][c].setBackground(Color.YELLOW);
+            //cells[r][c].setBackground(new Color(70, 240, 110));
          }
       }
    }
@@ -27,12 +27,12 @@ public class Board extends JPanel{
          if(!cells[a][b].getActivated()){
             cells[a][b].activate(i + 1);
             cells[a][b].setBackground(Color.WHITE);
-            indexes[i][1] = a * 50;
-            indexes[i][0] = b * 50;
+            indexes[i][0] = cells[a][b].getX() + 25;
+            indexes[i][1] = cells[a][b].getY() + 25;         
          }else{
             i --;
          }
-      } 
+      }  
       x1 = indexes[0][0];
       y1 = indexes[0][1];
       x2 = indexes[1][0];
@@ -61,7 +61,7 @@ public class Board extends JPanel{
    @Override 
    public void paint(Graphics g) {
       super.paint(g);
-      g.drawLine(x1, y1, x2, y2);
+      g.drawLine(x1, y1, x2, y2); //temporary
       g.drawLine(x2, y2, x3, y3);
       g.drawLine(x3, y3, x4, y4);
       g.drawLine(x4, y4, x5, y5);
