@@ -12,22 +12,28 @@ public class Board extends JPanel{
          for (int c = 0; c < cells[0].length; c++){
             cells[r][c] = new Cell(r, c);
             add(cells[r][c]);
-            cells[r][c].setBackground(new Color(70, 240, 110));
+            cells[r][c].setBackground(new Color(70, 240, 110)); // (70, 240, 110) for a good green
             cells[r][c].setEnabled(false);
          }
       }
    }
    
    public static void start(){
-      int places = 5;//change this
+      int places = 20;//change this
       int edges = 8;
-      int indexes[][] = new int[5][2];
+      int indexes[][] = new int[places][2];
       for(int i = 0; i < places; i ++){
          int a = (int)(Math.random() * DIM);
          int b = (int)(Math.random() * DIM);
          if(!cells[a][b].getActivated()){
             cells[a][b].activate(i + 1);
             cells[a][b].setBackground(Color.WHITE);
+            /*if(i == 0){
+               cells[a][b].setBackground(Color.GREEN);
+            }
+            if(i == places - 1){
+               cells[a][b].setBackground(Color.RED);
+            }*/
             indexes[i][0] = cells[a][b].getX() + 25;
             indexes[i][1] = cells[a][b].getY() + 25;         
          }else{
@@ -44,29 +50,28 @@ public class Board extends JPanel{
       y4 = indexes[3][1];
       x5 = indexes[4][0];
       y5 = indexes[4][1];
-      for (int r = 0; r < cells.length; r++){
+      /*for (int r = 0; r < cells.length; r++){
          for (int c = 0; c < cells[0].length; c++){
             if(!cells[r][c].getActivated()){
                cells[r][c].deactivate();
             }
          }
-      }
-      for(int i = 0; i < 7; i ++){
-
-      }
+      }*/
    }
    
    
-   
+   /*
    @Override 
    public void paint(Graphics g) {
       super.paint(g);
-      g.drawLine(x1, y1, x2, y2); //temporary
+      Graphics2D g2 = (Graphics2D) g;
+      g2.setStroke(new BasicStroke(3));
+      g.drawLine(x1, y1, x2, y2);
       g.drawLine(x2, y2, x3, y3);
       g.drawLine(x3, y3, x4, y4);
       g.drawLine(x4, y4, x5, y5);
       g.drawLine(x5, y5, x1, y1);
-   }
+   }*/
    
    public static void main(String[] args){
       JFrame frame = new JFrame("Graph");
