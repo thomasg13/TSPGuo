@@ -20,6 +20,7 @@ public class Cell extends JButton implements MouseListener{
    public void activate(int a){
       String s = "" + a;
       this.setText(s);
+      
       activated = true;
       this.setEnabled(false);
    }
