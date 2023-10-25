@@ -1,5 +1,7 @@
 import java.awt.*;
 import javax.swing.*;
+import java.io.*;
+import java.util.*;
 
 public class Board extends JPanel{
    private static final int DIM = 20;
@@ -7,7 +9,9 @@ public class Board extends JPanel{
    private static int x1, x2, x3, x4, x5, y1, y2, y3, y4, y5;
    public static int[][] path = new int[DIM][2];//x, y
    public static double[][] distances = new double[DIM][DIM];
-   public static       int[] order = new int[DIM];
+   public static int[] order = new int[DIM];
+   public static boolean useSingle;
+   public static int[][] pairs = new int[DIM][2];//change size for now
    
    public Board(){
       setLayout(new GridLayout(DIM, DIM));
@@ -19,6 +23,7 @@ public class Board extends JPanel{
             cells[r][c].setEnabled(false);
          }
       }
+      useSingle = true;
    }
    
    public static void start(){
@@ -74,7 +79,8 @@ public class Board extends JPanel{
             distances[i][j] = distance;
          }
       }
-      nearestAvailableNeighbor();
+      //nearestAvailableNeighbor();
+      greedy();
    }
 
    
@@ -119,6 +125,91 @@ public class Board extends JPanel{
       
    }
    
+   public static void greedy(){
+      useSingle = false;
+      int[] used = new int[DIM];
+      for(int i = 0; i < DIM; i ++){
+         used[i] = 0;
+      }
+      boolean ongoing = true;
+      int count = 0;
+      while(ongoing){
+         double currentMin = 100;
+         double tempMax = 0;//helps solve problems
+         int currentI = -1;
+         int currentJ = -1;
+         for(int i = 0; i < DIM; i ++){
+            for(int j = 0; j < DIM; j ++){
+               boolean works = true;
+               if((distances[i][j] < currentMin) && used[i] < 2 && used[j] < 2 && i != j){//make sure its not duplicate but reverse
+                  boolean alreadyDone = false;
+                  for(int k = 0; k < DIM; k ++){
+                     if( (pairs[k][0] == j && pairs[k][1] == i) || (pairs[k][0] == i && pairs[k][1] == j)){
+                        works = false;
+                     }
+                    
+                  }
+               }else{
+                  works = false;
+               }
+               //check for cycles
+               /*
+               if(used[i] == 1 && used[j] == 1){
+                  int index = i;
+                  int indexInPairs = -1;
+                  while(true){
+                     for(int m = 0; m < DIM; m ++){
+                        if(pairs[m][0] == index){
+                           index = pairs[m][1];
+                           break;
+                        }else if(pairs[m][1] == index){
+                           index = pairs[m][0];
+                           break;
+                        }
+                     }
+                     if(index == j){
+                        works = false;
+                        break;
+                     }else{
+                        if(!(used[index] == 2)){
+                           break;
+                        }
+                     }
+                  }
+               }*/
+               
+               
+               if(works){
+                  currentMin = distances[i][j];
+                  currentI = i;
+                  currentJ = j;
+                     
+               }
+            }
+         }
+         if(currentI == -1){
+            ongoing = false;
+            break;
+         }else{//add the pair
+            pairs[count][0] = currentI;
+            pairs[count][1] = currentJ;
+            used[currentI] = used[currentI] + 1;
+            used[currentJ] = used[currentJ] + 1;
+            count ++;
+         }
+      }
+   }
+   
+   public static int findBestPath(ArrayList<Integer> a){
+      return 0;
+   }
+   
+   public static void bruteForce(){
+      int[] arr = new int [DIM];
+      ArrayList<Integer> a = new ArrayList<Integer>();
+      findBestPath(a);
+   }
+   
    
    @Override 
    public void paint(Graphics g) {
@@ -132,24 +223,40 @@ public class Board extends JPanel{
       g.drawLine(x4, y4, x5, y5);
       g.drawLine(x5, y5, x1, y1);
       */
-      int ax = 0;
-      int ay = 0;
-      int bx = 0;
-      int by = 0;
+      if(useSingle){
+         int ax = 0;
+         int ay = 0;
+         int bx = 0;
+         int by = 0;
       
-      Cell a = find(order[0] + 1);
-      int ax1 = a.getX() + 25;
-      int ay1 = a.getY() + 25;
-      for(int i = 1; i < DIM; i ++){
-         Cell b = find(order[i] + 1);
-         ax = a.getX() + 25;
-         ay = a.getY() + 25;
-         bx = b.getX() + 25;
-         by = b.getY() + 25;
-         g.drawLine(ax, ay, bx, by);
-         a = find(order[i] + 1);
+         Cell a = find(order[0] + 1);
+         int ax1 = a.getX() + 25;
+         int ay1 = a.getY() + 25;
+         for(int i = 1; i < DIM; i ++){
+            Cell b = find(order[i] + 1);
+            ax = a.getX() + 25;
+            ay = a.getY() + 25;
+            bx = b.getX() + 25;
+            by = b.getY() + 25;
+            g.drawLine(ax, ay, bx, by);
+            a = find(order[i] + 1);
+         }
+         g.drawLine(ax1, ay1, bx, by);
+      }else{
+         for(int i = 0; i < DIM; i ++){
+            int ax = 0;
+            int ay = 0;
+            int bx = 0;
+            int by = 0;
+            Cell a = find(pairs[i][0] + 1);
+            Cell b = find(pairs[i][1] + 1);
+            ax = a.getX() + 25;
+            ay = a.getY() + 25;
+            bx = b.getX() + 25;
+            by = b.getY() + 25;
+            g.drawLine(ax, ay, bx, by);
+         }
       }
-      g.drawLine(ax1, ay1, bx, by);
    }
  
    /*  

@@ -11,8 +11,9 @@ public class Driver{
       frame.setResizable(false);
       frame.setLocation(0, 0);
       Board c = new Board();
-      frame.setLayout(new BorderLayout());
-      frame.add(c, BorderLayout.CENTER);
+      frame.setContentPane(c);
+      //frame.setLayout(new BorderLayout());
+      //frame.add(c, BorderLayout.CENTER);
       frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       frame.setVisible(true);
       c.start();
