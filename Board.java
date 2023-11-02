@@ -80,39 +80,10 @@ public class Board extends JPanel{
          }
       }
       //nearestAvailableNeighbor();
-      greedy();
+      //greedy();
+      chaos();
    }
 
-   private static boolean createsCycle(int[][] pairs, int i, int j) {
-      // If either i or j is not yet connected to any node, it can't form a cycle
-      int countI = 0, countJ = 0;
-      for (int k = 0; k < DIM; k++) {
-          if (pairs[k][0] == i || pairs[k][1] == i) countI++;
-          if (pairs[k][0] == j || pairs[k][1] == j) countJ++;
-          if (countI > 1 || countJ > 1) return true;  // If i or j is already connected to two nodes, a cycle is formed
-      }
-      if (countI == 0 || countJ == 0) return false;
-  
-      // Depth-First Search from i to check if we can reach j
-      Stack<Integer> stack = new Stack<>();
-      Set<Integer> visited = new HashSet<>();
-      stack.push(i);
-      while (!stack.isEmpty()) {
-          int current = stack.pop();
-          if (current == j) return true;  // Found a cycle
-          visited.add(current);
-          for (int k = 0; k < DIM; k++) {
-              if (pairs[k][0] == current && !visited.contains(pairs[k][1])) {
-                  stack.push(pairs[k][1]);
-              }
-              if (pairs[k][1] == current && !visited.contains(pairs[k][0])) {
-                  stack.push(pairs[k][0]);
-              }
-          }
-      }
-      return false;
-  }
-  
    
    public static Cell find(int n){
       for(int r = 0; r < DIM; r ++){
@@ -183,10 +154,10 @@ public class Board extends JPanel{
                   works = false;
                }
 
-               if(createsCycle(pairs, currentI, currentJ)){
+               /*if(createsCycle(pairs, currentI, currentJ)){
 
                   works = false;
-               }
+               }*/
                //check for cycles
                /*
                if(used[i] == 1 && used[j] == 1){
@@ -234,6 +205,35 @@ public class Board extends JPanel{
          }
       }
    }
+
+   public static void chaos(){
+      boolean[] used = new boolean[DIM];
+      for(int i = 0; i < DIM; i ++){
+         used[i] = false;
+      }
+      used[0] = true;
+      int count = 1;
+      int current = 0;
+      order[0] = current;
+      boolean ongoing = true;
+      while(ongoing){
+         int c;
+         while(true){
+            c = (int)(Math.random() * DIM);
+            if(!used[c]){
+               break;
+            }
+            
+         }
+         order[count] = c;
+         used[c] = true;
+         count++;
+         if(count == DIM){
+            break;
+         }
+      }
+   }
+   
    
    public static int findBestPath(ArrayList<Integer> a){
       return 0;
