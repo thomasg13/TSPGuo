@@ -4,15 +4,19 @@ import java.io.*;
 import java.util.*;
 
 public class Board extends JPanel{
-   private static final int DIM = 20;
-   private static Cell[][] cells = new Cell[DIM][DIM];
-   private static int x1, x2, x3, x4, x5, y1, y2, y3, y4, y5;
-   public static int[][] path = new int[DIM][2];//x, y
-   public static double[][] distances = new double[DIM][DIM];
-   public static int[] order = new int[DIM];
-   public static boolean useSingle;
-   public static int[][] pairs = new int[DIM][2];//change size for now
-   
+   private static Board singleton = new Board();
+   private final int DIM = 20;
+   private Cell[][] cells = new Cell[DIM][DIM];
+   private int x1, x2, x3, x4, x5, y1, y2, y3, y4, y5;
+   private int[][] path = new int[DIM][2];//x, y
+   private double[][] distances = new double[DIM][DIM];
+   private int[] order = new int[DIM];
+   private boolean useSingle;
+   private int[][] pairs = new int[DIM][2];//change size for now
+   public static Board getInstance(){
+      return singleton;
+   }
+
    public Board(){
       setLayout(new GridLayout(DIM, DIM));
       for (int r = 0; r < cells.length; r++){
@@ -26,7 +30,7 @@ public class Board extends JPanel{
       useSingle = true;
    }
    
-   public static void start(){
+   public void start(){
       int places = 20;//change this
       int edges = 8;
       int indexes[][] = new int[places][2];
@@ -85,7 +89,7 @@ public class Board extends JPanel{
    }
 
    
-   public static Cell find(int n){
+   public Cell find(int n){
       for(int r = 0; r < DIM; r ++){
          for(int c = 0; c < DIM; c ++){
             if(cells[r][c].getNumber() == n){
@@ -96,7 +100,7 @@ public class Board extends JPanel{
       return null;
    }
    
-   public static void nearestAvailableNeighbor(){
+   public void nearestAvailableNeighbor(){
       boolean[] used = new boolean[DIM];
       for(int i = 0; i < DIM; i ++){
          used[i] = false;
@@ -126,7 +130,7 @@ public class Board extends JPanel{
       
    }
    
-   public static void greedy(){
+   public void greedy(){
       useSingle = false;
       int[] used = new int[DIM];
       for(int i = 0; i < DIM; i ++){
@@ -206,7 +210,7 @@ public class Board extends JPanel{
       }
    }
 
-   public static void chaos(){
+   public void chaos(){
       boolean[] used = new boolean[DIM];
       for(int i = 0; i < DIM; i ++){
          used[i] = false;
@@ -235,11 +239,11 @@ public class Board extends JPanel{
    }
    
    
-   public static int findBestPath(ArrayList<Integer> a){
+   public int findBestPath(ArrayList<Integer> a){
       return 0;
    }
    
-   public static void bruteForce(){
+   public void bruteForce(){
       int[] arr = new int [DIM];
       ArrayList<Integer> a = new ArrayList<Integer>();
       findBestPath(a);
@@ -295,7 +299,7 @@ public class Board extends JPanel{
    }
  
    /*  
-   public static void main(String[] args){
+   public void main(String[] args){
       JFrame frame = new JFrame("Graph");
       frame.setSize(1000, 1000);
       frame.setResizable(false);
