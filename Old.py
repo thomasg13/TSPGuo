@@ -1,29 +1,26 @@
 import tkinter as tk
-from tkinter.font import Font
-from tkinter import IntVar
 import random
 import time
 from itertools import permutations
 
-# Graphics
+# --- GUI Functions ---
 
 def draw_city(event):
     x, y = event.x, event.y
     city_number = len(cities)
     cities.append((x, y))
-    canvas.create_oval(x - 5, y - 5, x + 5, y + 5, fill='white')
-    canvas.create_text(x, y - 10, text=f'{city_number}', fill='black', font=('Arial', 10))
+    canvas.create_oval(x - 5, y - 5, x + 5, y + 5, fill='black')
+    canvas.create_text(x, y - 10, text=f'{city_number}', fill='red', font=('Arial', 8))
 
 def update_paths():
-    canvas.delete("path")  # removes old paths
+    canvas.delete("path")  # Remove old paths
     draw_path_segment(0)
 
 def draw_path_segment(i):
-    global window  # windows must be global
+    global window  # Declare window as global
     if i < len(cities) - 1:
-        canvas.create_line(cities[i], cities[i + 1], tags="path", fill='white')
-        X = algorithm_speed_var.get()
-        window.after(100, draw_path_segment, i + 1)  # Delay depending on algrotihm speed
+        canvas.create_line(cities[i], cities[i + 1], tags="path", fill='blue')
+        window.after(100, draw_path_segment, i + 1)  # Delay of 100 ms
 
 
 
@@ -31,11 +28,11 @@ def solve_tsp(algorithm):
     global cities
 
     if not cities:
-        return  # edge case, no cities
+        return  # No cities to solve for
 
     BRUTE_FORCE_LIMIT = 8
 
-    start_time = time.perf_counter()  # timer more precise, more decimal values
+    start_time = time.perf_counter()  # Start high-resolution timer
 
     # Select and run the algorithm
     if algorithm == 'greedy':
@@ -57,7 +54,7 @@ def solve_tsp(algorithm):
     else:
         solved_path = cities.copy()
 
-    end_time = time.perf_counter()  # stops timer
+    end_time = time.perf_counter()  # End high-resolution timer
 
     elapsed_time = end_time - start_time
     total_distance = path_length(solved_path)
@@ -79,8 +76,9 @@ def set_start_city(event):
     start_city = (event.x, event.y)
     canvas.create_oval(event.x - 5, event.y - 5, event.x + 5, event.y + 5, outline='green', width=2)
 
-# Algorithms
-# Greedy, Brute Force, Nearest Neighbor, Random, 2-Opt, Nearest Insertion
+# --- TSP Algorithms ---
+
+# [Greedy, Brute Force, Nearest Neighbor, and Random algorithms]
 
 def greedy_algorithm(cities):
     if len(cities) < 2:
@@ -105,7 +103,11 @@ def brute_force_algorithm(cities):
             shortest_path = path
     return list(shortest_path)
 
-def path_length(path): # helper method, calculates path length
+def path_length(path):
+    """
+    Calculate the total length of the path.
+    The path is a list of cities, and each city is a tuple of coordinates.
+    """
     if len(path) < 2:
         return 0
     return sum(distance(path[i], path[i + 1]) for i in range(len(path) - 1))
@@ -125,7 +127,10 @@ def nearest_neighbor_algorithm(cities, start_city=None):
         unvisited.remove(nearest)
     return path
 
-def random_algorithm(cities): # random path by shuffling list of cities
+def random_algorithm(cities):
+    """
+    Generate a random path by shuffling the list of cities.
+    """
     path = cities[:]
     random.shuffle(path)
     return path
@@ -137,7 +142,7 @@ def two_opt(cities):
         improved = False
         for i in range(1, len(cities) - 2):
             for j in range(i + 1, len(cities)):
-                if j - i == 1: continue  # Skips adjacent edges
+                if j - i == 1: continue  # Skip adjacent edges
                 new_path = best[:i] + best[i:j][::-1] + best[j:]
                 if path_length(new_path) < path_length(best):
                     best = new_path
@@ -169,33 +174,11 @@ def distance(city1, city2):
     return ((city1[0] - city2[0]) ** 2 + (city1[1] - city2[1]) ** 2) ** 0.5
 
 
-def add_controls():
-    global allow_revisits_var
-    allow_revisits_var = tk.BooleanVar(value=False)  # Default: revisits not allowed
+# --- Helper Functions ---
 
-    allow_revisits_checkbox = tk.Checkbutton(window, text="Allow Revisits", variable=allow_revisits_var)
-    allow_revisits_checkbox.pack()
+# [Distance and Path Length functions]
 
-def add_sliders():
-    global max_distance_var, algorithm_speed_var, num_salesmen_var, value
-    custom_font = Font(family="Helvetica", size=10) # weight="bold" for bold fonts
-
-    max_distance_var = tk.IntVar(value=100)  # Default max distance
-    algorithm_speed_var = tk.IntVar(value=50)  # Default speed (percent)
-    num_salesmen_var = tk.IntVar(value=1)  # Default number of salesmen for mTSP
-    
-    max_distance_slider = tk.Scale(window, from_=0, to=500, label="Max Distance", orient="horizontal", variable=max_distance_var, font=custom_font)
-    max_distance_slider.pack()
-    
-    algorithm_speed_var = tk.IntVar(value=0)
-    algorithm_speed_slider = tk.Scale(window, from_=1, to=100, label="Algorithm Speed (%)", orient="horizontal", variable=algorithm_speed_var, font=custom_font)
-    value = algorithm_speed_var.get()
-    algorithm_speed_slider.pack()
-    
-    num_salesmen_slider = tk.Scale(window, from_=1, to=10, label="Number of Salesmen", orient="horizontal", variable=num_salesmen_var, font=custom_font)
-    num_salesmen_slider.pack()
-
-# Main
+# --- Main Application ---
 
 def main():
     global window;
@@ -206,16 +189,13 @@ def main():
     window = tk.Tk()
     window.title("Traveling Salesman Problem")
 
-    canvas = tk.Canvas(window, width=600, height=400, bg='light green')
+    canvas = tk.Canvas(window, width=600, height=400, bg='white')
     canvas.pack()
     canvas.bind("<Button-1>", draw_city)
-    canvas.bind("<Button-3>", set_start_city)  # Right-click to set start city, not working atm
+    canvas.bind("<Button-3>", set_start_city)  # Right-click to set start city
 
-    add_controls()  # Add the revisit checkbox
-    add_sliders()   # Add the sliders
-    
     algorithm_var = tk.StringVar(window)
-    algorithm_var.set("greedy")  # Current default value
+    algorithm_var.set("greedy")  # default value
     algorithm_menu = tk.OptionMenu(window, algorithm_var, "greedy", "brute_force", "nearest_neighbor", "random", "2-opt", "nearest_insertion")
     algorithm_menu.pack()
 
